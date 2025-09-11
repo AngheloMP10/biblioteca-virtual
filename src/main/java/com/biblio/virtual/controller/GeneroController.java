@@ -1,11 +1,15 @@
 package com.biblio.virtual.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.biblio.virtual.model.Genero;
 import com.biblio.virtual.service.IGeneroService;
 
 @RestController
-@RequestMapping("/genero")
+@RequestMapping("/generos")
 public class GeneroController {
 
 	private final IGeneroService service;
@@ -14,17 +18,52 @@ public class GeneroController {
 		this.service = service;
 	}
 
+	// CREATE - Crear nuevo género
 	@PostMapping
-	public Long guardar(@RequestParam String nombre) {
-		Genero genero = new Genero();
-		genero.setNombre(nombre);
+	public ResponseEntity<Genero> guardar(@RequestBody Genero genero) {
 		service.save(genero);
-		return genero.getId();
+		return ResponseEntity.ok(genero);
 	}
 
+	// READ - Listar todos los géneros
+	@GetMapping
+	public ResponseEntity<List<Genero>> listar() {
+		return ResponseEntity.ok(service.findAll());
+	}
+
+	// READ - Buscar género por ID específico
 	@GetMapping("/{id}")
-	public String buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<Genero> buscarPorId(@PathVariable Long id) {
 		Genero genero = service.findById(id);
-		return (genero != null) ? genero.getNombre() : "No encontrado";
+		if (genero != null) {
+			return ResponseEntity.ok(genero);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// UPDATE - Actualizar género existente
+	@PutMapping("/{id}")
+	public ResponseEntity<Genero> actualizar(@PathVariable Long id, @RequestBody Genero genero) {
+		Genero existente = service.findById(id);
+		if (existente != null) {
+			existente.setNombre(genero.getNombre());
+			service.save(existente);
+			return ResponseEntity.ok(existente);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// DELETE - Eliminar género por ID
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+		Genero existente = service.findById(id);
+		if (existente != null) {
+			service.delete(id);
+			return ResponseEntity.noContent().build();
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 }

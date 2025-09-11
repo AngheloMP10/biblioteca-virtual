@@ -23,4 +23,19 @@ public class AutorService implements IAutorService {
 	public List<Autor> findAllById(List<Long> ids) {
 		return (List<Autor>) repo.findAllById(ids);
 	}
+
+	@Override
+	public Autor findById(Long id) {
+		return repo.findById(id).orElse(null);
+	}
+
+	@Override
+	public Autor save(Autor autor) {
+		return repo.save(autor);
+	}
+
+	@Override
+	public void delete(Long id) {
+		repo.deleteById(id);
+	}
 }

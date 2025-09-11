@@ -8,4 +8,10 @@ public interface IAutorService {
 	List<Autor> findAll();
 
 	List<Autor> findAllById(List<Long> ids);
+
+	Autor findById(Long id);
+
+	Autor save(Autor autor);
+
+	void delete(Long id);
 }
