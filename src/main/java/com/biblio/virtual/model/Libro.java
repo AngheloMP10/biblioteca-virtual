@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "libros")
 public class Libro implements Serializable {
@@ -20,13 +23,18 @@ public class Libro implements Serializable {
 	@NotEmpty(message = "El título no debe estar vacío")
 	private String titulo;
 
-	// Relación con Autor (varios autores por libro)
+	// En esta relación ManyToMany con Autor, este es el lado dueño,
+	// así que agregamos @JsonManagedReference para manejar la serialización
 	@ManyToMany
 	@JoinTable(name = "libro_autor", joinColumns = @JoinColumn(name = "libro_id"), inverseJoinColumns = @JoinColumn(name = "autor_id"))
+	@JsonManagedReference
 	private List<Autor> autores;
 
+	// En la relación ManyToOne con Genero, este es el lado inverso,
+	// así que agregamos @JsonBackReference para evitar bucles
 	@ManyToOne
 	@JoinColumn(name = "genero_id")
+	@JsonBackReference
 	private Genero genero;
 
 	@NotNull(message = "El año de publicación no debe estar vacío")
