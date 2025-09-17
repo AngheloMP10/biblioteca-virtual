@@ -1,10 +1,11 @@
 HELP.md
+# Directorios y archivos generados por Maven
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# Archivos generados por STS/Eclipse
 .apt_generated
 .classpath
 .factorypath
@@ -13,13 +14,13 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
+# Archivos generados por IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# Archivos generados por NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -29,5 +30,20 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# Archivos generados por VS Code
 .vscode/
+
+# Archivos de configuración de Spring (si aplican datos sensibles)
+application.properties
+application.yml
+
+# Archivos temporales del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de bases de datos H2
+*.db
+*.mv.db
+
+# Archivos de Node.js (si aplica)
+node_modules/
