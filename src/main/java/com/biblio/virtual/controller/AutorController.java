@@ -1,8 +1,9 @@
-	package com.biblio.virtual.controller;
+package com.biblio.virtual.controller;
 
 import com.biblio.virtual.model.Autor;
 import com.biblio.virtual.service.IAutorService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,9 @@ public class AutorController {
 		this.service = service;
 	}
 
-	// Crear Autor 
+	// Solo ADMIN puede crear autores
+	// Crear Autor
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity<Autor> guardar(@RequestParam String nombre, @RequestParam(required = false) String urlFoto) {
 		Autor autor = new Autor();
@@ -27,20 +30,26 @@ public class AutorController {
 		return ResponseEntity.ok(nuevoAutor);
 	}
 
+	// ADMIN y USER pueden ver un autor por ID
 	// Leer Autor por ID
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Autor> buscarPorId(@PathVariable Long id) {
 		Autor autor = service.findById(id);
 		return (autor != null) ? ResponseEntity.ok(autor) : ResponseEntity.notFound().build();
 	}
 
+	// ADMIN y USER pueden listar todos los autores
 	// Listar todos los autores
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping
 	public ResponseEntity<List<Autor>> listar() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
+	// Solo ADMIN puede actualizar
 	// Actualizar Autor
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<Autor> actualizar(@PathVariable Long id, @RequestParam String nombre,
 			@RequestParam(required = false) String urlFoto) {
@@ -54,7 +63,9 @@ public class AutorController {
 		return ResponseEntity.ok(actualizado);
 	}
 
+	// Solo ADMIN puede eliminar
 	// Eliminar Autor
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> eliminar(@PathVariable Long id) {
 		Autor autor = service.findById(id);

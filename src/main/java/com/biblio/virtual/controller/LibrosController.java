@@ -3,9 +3,9 @@ package com.biblio.virtual.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.biblio.virtual.model.Autor;
 import com.biblio.virtual.model.Libro;
 import com.biblio.virtual.service.IAutorService;
 import com.biblio.virtual.service.IGeneroService;
@@ -25,10 +25,12 @@ public class LibrosController {
 		this.autorService = autorService;
 	}
 
+	// Solo ADMIN puede crear nuevos libros
 	// CREATE - Crear nuevo libro con validación de portada por defecto
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity<Libro> guardar(@RequestBody Libro libro) {
-		// portada por defecto
+		// Portada por defecto
 		if (libro.getPortada() == null || libro.getPortada().isEmpty()) {
 			libro.setPortada("_default.jpg");
 		}
@@ -36,13 +38,17 @@ public class LibrosController {
 		return ResponseEntity.ok(libro);
 	}
 
+	// ADMIN y USER pueden listar libros
 	// READ - Listar todos los libros
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping
 	public ResponseEntity<List<Libro>> listar() {
 		return ResponseEntity.ok(libroService.findAll());
 	}
 
+	// ADMIN y USER pueden buscar libro por ID
 	// READ - Buscar libro por ID específico
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Libro> buscarPorId(@PathVariable Long id) {
 		Libro libro = libroService.findById(id);
@@ -53,7 +59,9 @@ public class LibrosController {
 		}
 	}
 
+	// Solo ADMIN puede actualizar libros
 	// UPDATE - Actualizar libro existente con manejo completo de relaciones
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<Libro> actualizar(@PathVariable Long id, @RequestBody Libro libro) {
 		Libro existente = libroService.findById(id);
@@ -80,7 +88,9 @@ public class LibrosController {
 		}
 	}
 
+	// Solo ADMIN puede eliminar libros
 	// DELETE - Eliminar libro por ID
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
 		Libro existente = libroService.findById(id);
