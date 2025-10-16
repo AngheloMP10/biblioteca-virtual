@@ -1,3 +1,4 @@
+
 package com.biblio.virtual.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Usuario usuario = usuarioRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-		// ejemplo: "ADMIN" o "USER"
-		return User.builder().username(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRole())
+		// Asegurarnos de que el rol tenga el prefijo ROLE_
+		String role = usuario.getRole().startsWith("ROLE_") ? 
+				usuario.getRole() : "ROLE_" + usuario.getRole();
+		return User.builder()
+				.username(usuario.getUsername())
+				.password(usuario.getPassword())
+				.authorities(role)
 				.build();
 	}
+
 }

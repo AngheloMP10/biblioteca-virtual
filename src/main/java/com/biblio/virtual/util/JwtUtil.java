@@ -1,18 +1,18 @@
 package com.biblio.virtual.util;
 
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import javax.crypto.SecretKey;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
+
 	@Value("${jwt.secret}")
 	private String secret;
 
@@ -23,10 +23,14 @@ public class JwtUtil {
 		return Keys.hmacShaKeyFor(secret.getBytes());
 	}
 
-	// Generar token con username y rol
+	// Generar token con username y rol formateado correctamente
 	public String generateToken(String username, String role) {
-		return Jwts.builder().setSubject(username).claim("role", role).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + expiration))
+		if (role != null && !role.startsWith("ROLE_")) {
+			role = "ROLE_" + role; // garantiza formato correcto
+		}
+
+		return Jwts.builder().setIssuer("biblioteca-virtual").setSubject(username).claim("role", role)
+				.setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + expiration))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
 	}
 
@@ -37,7 +41,11 @@ public class JwtUtil {
 
 	// Extraer rol del token
 	public String extractRole(String token) {
-		return extractAllClaims(token).get("role", String.class);
+		String role = extractAllClaims(token).get("role", String.class);
+		if (role != null && !role.startsWith("ROLE_")) {
+			role = "ROLE_" + role;
+		}
+		return role;
 	}
 
 	// Extraer fecha de expiración

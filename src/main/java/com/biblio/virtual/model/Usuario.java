@@ -17,7 +17,7 @@ public class Usuario {
 	private String password;
 
 	@Column(nullable = false)
-	private String role; // "ADMIN" o "USER"
+	private String role; // Valores esperados: "ROLE_ADMIN" o "ROLE_USER"
 
 	// Constructores
 	public Usuario() {

@@ -20,19 +20,19 @@ public class AutorController {
 
 	// Solo ADMIN puede crear autores
 	// Crear Autor
-	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping
-	public ResponseEntity<Autor> guardar(@RequestParam String nombre, @RequestParam(required = false) String urlFoto) {
-		Autor autor = new Autor();
-		autor.setNombre(nombre);
-		autor.setUrlFoto(urlFoto);
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PostMapping(consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Autor> guardar(@RequestBody Autor autor) {
+		if (autor.getLibros() == null) {
+			autor.setLibros(new java.util.ArrayList<>());
+		}
 		Autor nuevoAutor = service.save(autor);
 		return ResponseEntity.ok(nuevoAutor);
 	}
 
 	// ADMIN y USER pueden ver un autor por ID
 	// Leer Autor por ID
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Autor> buscarPorId(@PathVariable Long id) {
 		Autor autor = service.findById(id);
@@ -41,7 +41,7 @@ public class AutorController {
 
 	// ADMIN y USER pueden listar todos los autores
 	// Listar todos los autores
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USER')")
 	@GetMapping
 	public ResponseEntity<List<Autor>> listar() {
 		return ResponseEntity.ok(service.findAll());
@@ -49,23 +49,25 @@ public class AutorController {
 
 	// Solo ADMIN puede actualizar
 	// Actualizar Autor
-	@PreAuthorize("hasRole('ADMIN')")
-	@PutMapping("/{id}")
-	public ResponseEntity<Autor> actualizar(@PathVariable Long id, @RequestParam String nombre,
-			@RequestParam(required = false) String urlFoto) {
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Autor> actualizar(@PathVariable Long id, @RequestBody Autor autorActualizado) {
 		Autor autor = service.findById(id);
 		if (autor == null) {
 			return ResponseEntity.notFound().build();
 		}
-		autor.setNombre(nombre);
-		autor.setUrlFoto(urlFoto);
+		autor.setNombre(autorActualizado.getNombre());
+		autor.setUrlFoto(autorActualizado.getUrlFoto());
+		if (autorActualizado.getLibros() != null) {
+			autor.setLibros(autorActualizado.getLibros());
+		}
 		Autor actualizado = service.save(autor);
 		return ResponseEntity.ok(actualizado);
 	}
 
 	// Solo ADMIN puede eliminar
 	// Eliminar Autor
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> eliminar(@PathVariable Long id) {
 		Autor autor = service.findById(id);

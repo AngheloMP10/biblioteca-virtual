@@ -3,15 +3,8 @@ package com.biblio.virtual.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
@@ -30,9 +23,9 @@ public class Autor implements Serializable {
 	@Column(name = "url_foto")
 	private String urlFoto; // Foto opcional del autor
 
-	@ManyToMany(mappedBy = "autores")
-	@JsonBackReference
-	private List<Libro> libros;
+	@ManyToMany(mappedBy = "autores", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JsonIgnoreProperties("autores")
+	private List<Libro> libros = new java.util.ArrayList<>();
 
 	// Getters y Setters
 	public Long getId() {

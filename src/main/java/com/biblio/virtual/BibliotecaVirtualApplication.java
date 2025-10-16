@@ -30,7 +30,7 @@ public class BibliotecaVirtualApplication {
 				Usuario admin = new Usuario();
 				admin.setUsername("admin");
 				admin.setPassword(passwordEncoder.encode("admin123"));
-				admin.setRole("ADMIN");
+				admin.setRole("ROLE_ADMIN");
 				usuarioRepository.save(admin);
 				System.out.println("Usuario ADMIN creado: admin / admin123");
 			}
@@ -39,7 +39,7 @@ public class BibliotecaVirtualApplication {
 				Usuario user = new Usuario();
 				user.setUsername("user");
 				user.setPassword(passwordEncoder.encode("user123"));
-				user.setRole("USER");
+				user.setRole("ROLE_USER");
 				usuarioRepository.save(user);
 				System.out.println("Usuario USER creado: user / user123");
 			}
