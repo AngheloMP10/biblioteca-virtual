@@ -3,7 +3,7 @@ package com.biblio.virtual.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,8 +27,8 @@ public class Genero implements Serializable {
 	private String nombre;
 
 	@OneToMany(mappedBy = "genero")
-	@JsonManagedReference
-	private List<Libro> libros;
+	@JsonIgnoreProperties("genero")
+	private List<Libro> libros = new java.util.ArrayList<>();
 
 	// Getters y Setters
 	public Long getId() {

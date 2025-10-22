@@ -3,6 +3,7 @@ package com.biblio.virtual.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.biblio.virtual.model.Genero;
@@ -18,20 +19,26 @@ public class GeneroController {
 		this.service = service;
 	}
 
+	// Solo ADMIN puede crear géneros
 	// CREATE - Crear nuevo género
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity<Genero> guardar(@RequestBody Genero genero) {
 		service.save(genero);
 		return ResponseEntity.ok(genero);
 	}
 
+	// ADMIN y USER pueden listar géneros
 	// READ - Listar todos los géneros
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping
 	public ResponseEntity<List<Genero>> listar() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
+	// ADMIN y USER pueden buscar un género por ID
 	// READ - Buscar género por ID específico
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Genero> buscarPorId(@PathVariable Long id) {
 		Genero genero = service.findById(id);
@@ -42,7 +49,9 @@ public class GeneroController {
 		}
 	}
 
+	// Solo ADMIN puede actualizar géneros
 	// UPDATE - Actualizar género existente
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<Genero> actualizar(@PathVariable Long id, @RequestBody Genero genero) {
 		Genero existente = service.findById(id);
@@ -55,7 +64,9 @@ public class GeneroController {
 		}
 	}
 
+	// Solo ADMIN puede eliminar géneros
 	// DELETE - Eliminar género por ID
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
 		Genero existente = service.findById(id);

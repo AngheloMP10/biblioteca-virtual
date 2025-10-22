@@ -1,28 +1,28 @@
 -- ========================
 -- AUTORES
 -- ========================
-INSERT INTO autores (id, nombre, url_foto) VALUES (1, 'Gabriel García Márquez', NULL);
-INSERT INTO autores (id, nombre, url_foto) VALUES (2, 'Mario Vargas Llosa', NULL);
-INSERT INTO autores (id, nombre, url_foto) VALUES (3, 'Isabel Allende', NULL);
+INSERT INTO autores (nombre, url_foto) VALUES ('Gabriel García Márquez', NULL);
+INSERT INTO autores (nombre, url_foto) VALUES ('Mario Vargas Llosa', NULL);
+INSERT INTO autores (nombre, url_foto) VALUES ('Isabel Allende', NULL);
 
 -- ========================
 -- GÉNEROS
 -- ========================
-INSERT INTO generos (id, nombre) VALUES (1, 'Realismo Mágico');
-INSERT INTO generos (id, nombre) VALUES (2, 'Novela Histórica');
-INSERT INTO generos (id, nombre) VALUES (3, 'Drama');
+INSERT INTO generos (nombre) VALUES ('Realismo Mágico');
+INSERT INTO generos (nombre) VALUES ('Novela Histórica');
+INSERT INTO generos (nombre) VALUES ('Drama');
 
 -- ========================
 -- LIBROS
 -- ========================
-INSERT INTO libros (id, titulo, anio_publicacion, disponible, portada, genero_id)
-VALUES (1, 'Cien Años de Soledad', 1967, true, NULL, 1);
+INSERT INTO libros (titulo, anio_publicacion, disponible, portada, genero_id)
+VALUES ('Cien Años de Soledad', 1967, true, NULL, 1);
 
-INSERT INTO libros (id, titulo, anio_publicacion, disponible, portada, genero_id)
-VALUES (2, 'La Ciudad y los Perros', 1963, true, NULL, 2);
+INSERT INTO libros (titulo, anio_publicacion, disponible, portada, genero_id)
+VALUES ('La Ciudad y los Perros', 1963, true, NULL, 2);
 
-INSERT INTO libros (id, titulo, anio_publicacion, disponible, portada, genero_id)
-VALUES (3, 'La Casa de los Espíritus', 1982, true, NULL, 1);
+INSERT INTO libros (titulo, anio_publicacion, disponible, portada, genero_id)
+VALUES ('La Casa de los Espíritus', 1982, true, NULL, 1);
 
 -- ========================
 -- RELACIÓN LIBROS - AUTORES (tabla intermedia libro_autor)
