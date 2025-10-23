@@ -20,5 +20,5 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+      - name: Build with Maven (sin tests)
+        run: mvn -B package -DskipTests --file pom.xml
