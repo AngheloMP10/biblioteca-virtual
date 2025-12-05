@@ -3,6 +3,7 @@ package com.biblio.virtual.dto;
 public class AuthResponse {
 
 	private String token;
+	private String tipoToken = "Bearer"; // <-- Angular
 	private String username;
 	private String role;
 
@@ -19,6 +20,14 @@ public class AuthResponse {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getTipoToken() {
+		return tipoToken;
+	}
+
+	public void setTipoToken(String tipoToken) {
+		this.tipoToken = tipoToken;
 	}
 
 	public String getUsername() {

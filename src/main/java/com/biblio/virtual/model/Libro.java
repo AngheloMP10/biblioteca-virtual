@@ -22,15 +22,13 @@ public class Libro implements Serializable {
 	@NotEmpty(message = "El título no debe estar vacío")
 	private String titulo;
 
-	// 🔄 Relación ManyToMany con Autor (lado dueño)
+	// Relación ManyToMany con Autor
 	@ManyToMany
-	@JoinTable(name = "libro_autor", 
-		joinColumns = @JoinColumn(name = "libro_id"), 
-		inverseJoinColumns = @JoinColumn(name = "autor_id"))
+	@JoinTable(name = "libro_autor", joinColumns = @JoinColumn(name = "libro_id"), inverseJoinColumns = @JoinColumn(name = "autor_id"))
 	@JsonIgnoreProperties("libros")
 	private List<Autor> autores = new java.util.ArrayList<>();
 
-	// 🔗 Relación ManyToOne con Genero
+	// Relación ManyToOne con Genero
 	@ManyToOne
 	@JoinColumn(name = "genero_id")
 	@JsonIgnoreProperties("libros")
@@ -43,6 +41,11 @@ public class Libro implements Serializable {
 	private boolean disponible;
 
 	private String portada; // Imagen opcional del libro
+
+	// Relación OneToMany con Prestamo
+	@OneToMany(mappedBy = "libro")
+	@JsonIgnoreProperties("libro")
+	private List<Prestamo> prestamos = new java.util.ArrayList<>();
 
 	// Getters y Setters
 	public Long getId() {
@@ -100,4 +103,13 @@ public class Libro implements Serializable {
 	public void setPortada(String portada) {
 		this.portada = portada;
 	}
+
+	public List<Prestamo> getPrestamos() {
+		return prestamos;
+	}
+
+	public void setPrestamos(List<Prestamo> prestamos) {
+		this.prestamos = prestamos;
+	}
+
 }
