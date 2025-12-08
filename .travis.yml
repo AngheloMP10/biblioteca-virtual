@@ -1,7 +1,0 @@
-language: java
-
-jdk:
-  - openjdk21
-
-script:
-  - mvn -B package -DskipTests
