@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  db:
+  postgres:
     image: postgres:15
     container_name: biblioteca-postgres
     restart: always
@@ -9,30 +9,30 @@ services:
       POSTGRES_DB: biblioteca_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - biblioteca-net
 
   backend:
-    image: biblioteca-virtual-backend
+    image: anghleomp10/biblioteca-virtual-backend:latest
     container_name: biblioteca-backend
+    restart: always
     depends_on:
-      - db
+      - postgres
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/biblioteca_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      JWT_SECRET: dockerSecretJWT2025
     networks:
       - biblioteca-net
 
   frontend:
-    image: biblioteca-virtual-frontend
+    image: anghleomp10/biblioteca-virtual-frontend:latest
     container_name: biblioteca-frontend
+    restart: always
     ports:
       - "4200:80"
     depends_on:
@@ -45,3 +45,4 @@ volumes:
 
 networks:
   biblioteca-net:
+    driver: bridge
