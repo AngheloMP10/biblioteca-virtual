@@ -17,7 +17,7 @@ services:
       - biblioteca-net
 
   backend:
-    image: anghleomp/biblioteca-virtual-backend:latest
+    image: anghelomp/biblioteca-virtual-backend:latest
     container_name: biblioteca-backend
     restart: always
     depends_on:
@@ -30,7 +30,7 @@ services:
       - biblioteca-net
 
   frontend:
-    image: anghleomp/biblioteca-virtual-frontend:latest
+    image: anghelomp/biblioteca-virtual-frontend:latest
     container_name: biblioteca-frontend
     restart: always
     ports:
