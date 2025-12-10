@@ -13,4 +13,9 @@ public interface IPrestamoService {
 
 	// Listar por usuario (USER)
 	List<Prestamo> findByUsername(String username);
+
+	void aprobarPrestamo(Long id);
+
+	void rechazarPrestamo(Long id);
+
 }

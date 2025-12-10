@@ -50,4 +50,20 @@ public class PrestamoController {
 
 		return ResponseEntity.ok(prestamoService.findByUsername(username));
 	}
+
+	// APROBAR PRÉSTAMO (Solo Admin)
+	@PostMapping("/aprobar/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> aprobarPrestamo(@PathVariable Long id) {
+		prestamoService.aprobarPrestamo(id);
+		return ResponseEntity.ok("Préstamo aprobado y libro entregado.");
+	}
+
+	// RECHAZAR PRÉSTAMO (Solo Admin)
+	@PostMapping("/rechazar/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> rechazarPrestamo(@PathVariable Long id) {
+		prestamoService.rechazarPrestamo(id);
+		return ResponseEntity.ok("Solicitud rechazada.");
+	}
 }

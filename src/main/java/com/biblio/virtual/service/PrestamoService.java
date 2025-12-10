@@ -50,6 +50,37 @@ public class PrestamoService implements IPrestamoService {
 	}
 
 	@Override
+	@Transactional
+	public void aprobarPrestamo(Long id) {
+		Prestamo prestamo = prestamoRepo.findById(id).orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
+
+		// Validar disponibilidad del libro
+		if (!prestamo.getLibro().isDisponible()) {
+			throw new RuntimeException("El libro ya no está disponible");
+		}
+
+		// Cambiar estado
+		prestamo.setEstado("APROBADO");
+		prestamo.setFechaDevolucion(LocalDate.now().plusDays(7));
+
+		// Marcar libro como NO disponible
+		Libro libro = prestamo.getLibro();
+		libro.setDisponible(false);
+		libroRepo.save(libro);
+
+		prestamoRepo.save(prestamo);
+	}
+
+	@Override
+	@Transactional
+	public void rechazarPrestamo(Long id) {
+		Prestamo prestamo = prestamoRepo.findById(id).orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
+
+		prestamo.setEstado("RECHAZADO");
+		prestamoRepo.save(prestamo);
+	}
+
+	@Override
 	public List<Prestamo> findAll() {
 		return prestamoRepo.findAll();
 	}
