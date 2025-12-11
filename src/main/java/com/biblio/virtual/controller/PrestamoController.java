@@ -22,7 +22,7 @@ public class PrestamoController {
 	}
 
 	// Solicitar préstamo (USER / ADMIN)
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
 	@PostMapping("/solicitar/{libroId}")
 	public ResponseEntity<?> solicitarPrestamo(@PathVariable Long libroId) {
 
@@ -34,14 +34,14 @@ public class PrestamoController {
 	}
 
 	// Listar TODOS los préstamos (ADMIN)
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@GetMapping("/todos")
 	public ResponseEntity<List<Prestamo>> listarTodos() {
 		return ResponseEntity.ok(prestamoService.findAll());
 	}
 
 	// Mis préstamos (USER)
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/mios")
 	public ResponseEntity<List<Prestamo>> misPrestamos() {
 
@@ -52,16 +52,16 @@ public class PrestamoController {
 	}
 
 	// APROBAR PRÉSTAMO (Solo Admin)
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping("/aprobar/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> aprobarPrestamo(@PathVariable Long id) {
 		prestamoService.aprobarPrestamo(id);
 		return ResponseEntity.ok("Préstamo aprobado y libro entregado.");
 	}
 
 	// RECHAZAR PRÉSTAMO (Solo Admin)
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping("/rechazar/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> rechazarPrestamo(@PathVariable Long id) {
 		prestamoService.rechazarPrestamo(id);
 		return ResponseEntity.ok("Solicitud rechazada.");

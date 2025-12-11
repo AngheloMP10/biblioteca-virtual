@@ -21,7 +21,7 @@ public class GeneroController {
 
 	// Solo ADMIN puede crear géneros
 	// CREATE - Crear nuevo género
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<Genero> guardar(@RequestBody Genero genero) {
 		service.save(genero);
@@ -30,7 +30,7 @@ public class GeneroController {
 
 	// ADMIN y USER pueden listar géneros
 	// READ - Listar todos los géneros
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping
 	public ResponseEntity<List<Genero>> listar() {
 		return ResponseEntity.ok(service.findAll());
@@ -38,7 +38,7 @@ public class GeneroController {
 
 	// ADMIN y USER pueden buscar un género por ID
 	// READ - Buscar género por ID específico
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Genero> buscarPorId(@PathVariable Long id) {
 		Genero genero = service.findById(id);
@@ -51,7 +51,7 @@ public class GeneroController {
 
 	// Solo ADMIN puede actualizar géneros
 	// UPDATE - Actualizar género existente
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<Genero> actualizar(@PathVariable Long id, @RequestBody Genero genero) {
 		Genero existente = service.findById(id);
@@ -66,7 +66,7 @@ public class GeneroController {
 
 	// Solo ADMIN puede eliminar géneros
 	// DELETE - Eliminar género por ID
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
 		Genero existente = service.findById(id);
