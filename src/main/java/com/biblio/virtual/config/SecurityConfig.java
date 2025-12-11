@@ -51,15 +51,22 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	// DEFINIMOS LA REGLA DE CORS 
+	// DEFINIMOS LA REGLA DE CORS
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		// Permitir Angular
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-		// Métodos permitidos (incluyendo OPTIONS para el preflight)
+
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", // Entorno local
+				"https://bucolic-horse-0d3efe.netlify.app" // Frontend en Netlify
+		));
+
+		// Métodos permitidos
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+		// Headers permitidos
 		configuration.setAllowedHeaders(Arrays.asList("*"));
+
+		// Permitir credenciales (cookies, auth headers)
 		configuration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
