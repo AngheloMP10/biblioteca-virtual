@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import com.biblio.virtual.filter.JwtRequestFilter;
 
@@ -34,24 +35,25 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-				// ACTIVAMOS CORS PARA QUE SEGURIDAD NO LO BLOQUEE
-				.cors(Customizer.withDefaults())
+		http.cors(Customizer.withDefaults()) // Habilita CORS
+				.csrf(csrf -> csrf.disable()) // Deshabilita CSRF
+				.authorizeHttpRequests(auth -> auth
+						// Permite las peticiones OPTIONS
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-				.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth
 						// Endpoints públicos
 						.requestMatchers("/auth/**").permitAll()
 						// Swagger
 						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-						// El resto requiere autenticación
+						// El resto autenticación
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // Filtro JWT
 
 		return http.build();
 	}
 
-	// DEFINIMOS LA REGLA DE CORS
+	// LA REGLA DE CORS
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
