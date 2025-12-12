@@ -23,13 +23,13 @@ public class Libro implements Serializable {
 	private String titulo;
 
 	// Relación ManyToMany con Autor
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER) // Cambiado a EAGER
 	@JoinTable(name = "libro_autor", joinColumns = @JoinColumn(name = "libro_id"), inverseJoinColumns = @JoinColumn(name = "autor_id"))
 	@JsonIgnoreProperties("libros")
 	private List<Autor> autores = new java.util.ArrayList<>();
 
 	// Relación ManyToOne con Genero
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER) // Cambiado a EAGER
 	@JoinColumn(name = "genero_id")
 	@JsonIgnoreProperties("libros")
 	private Genero genero;
@@ -111,5 +111,4 @@ public class Libro implements Serializable {
 	public void setPrestamos(List<Prestamo> prestamos) {
 		this.prestamos = prestamos;
 	}
-
 }
