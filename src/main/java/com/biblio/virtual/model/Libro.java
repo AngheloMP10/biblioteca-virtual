@@ -2,11 +2,13 @@ package com.biblio.virtual.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -22,14 +24,15 @@ public class Libro implements Serializable {
 	@NotEmpty(message = "El título no debe estar vacío")
 	private String titulo;
 
-	// Relación ManyToMany con Autor
-	@ManyToMany(fetch = FetchType.EAGER) // Cambiado a EAGER
+	// CAMBIO 1: FetchType.EAGER para que los autores carguen SIEMPRE
+	// @JsonIgnoreProperties evita el bucle infinito (Libro -> Autor -> Libro...)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "libro_autor", joinColumns = @JoinColumn(name = "libro_id"), inverseJoinColumns = @JoinColumn(name = "autor_id"))
 	@JsonIgnoreProperties("libros")
-	private List<Autor> autores = new java.util.ArrayList<>();
+	private List<Autor> autores = new ArrayList<>();
 
-	// Relación ManyToOne con Genero
-	@ManyToOne(fetch = FetchType.EAGER) // Cambiado a EAGER
+	// CAMBIO 2: FetchType.EAGER para asegurar que el género llegue al Front
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "genero_id")
 	@JsonIgnoreProperties("libros")
 	private Genero genero;
@@ -40,14 +43,17 @@ public class Libro implements Serializable {
 
 	private boolean disponible;
 
-	private String portada; // Imagen opcional del libro
+	private String portada;
 
-	// Relación OneToMany con Prestamo
-	@OneToMany(mappedBy = "libro")
-	@JsonIgnoreProperties("libro")
-	private List<Prestamo> prestamos = new java.util.ArrayList<>();
+	// CAMBIO 3 (CRÍTICO): @JsonIgnore
+	// Esto arregla el Error 500. Le dice al sistema:
+	// "No intentes convertir la lista de préstamos a JSON, ignórala".
+	@OneToMany(mappedBy = "libro", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Prestamo> prestamos = new ArrayList<>();
 
-	// Getters y Setters
+	// --- Getters y Setters ---
+
 	public Long getId() {
 		return id;
 	}
