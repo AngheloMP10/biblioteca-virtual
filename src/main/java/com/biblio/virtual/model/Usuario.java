@@ -1,6 +1,11 @@
 package com.biblio.virtual.model;
 
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
+
+// Importamos la protección para JSON
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usuarios")
@@ -17,7 +22,14 @@ public class Usuario {
 	private String password;
 
 	@Column(nullable = false)
-	private String role; // Valores esperados: "ROLE_ADMIN" o "ROLE_USER"
+	private String role; // "ROLE_ADMIN" o "ROLE_USER"
+
+	// AGREGAMOS ESTO: Relación con Préstamos
+	// Usamos @JsonIgnore para que al loguearte no intente descargar
+	// todo el historial de préstamos y cause un error o lentitud.
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Prestamo> prestamos = new ArrayList<>();
 
 	// Constructores
 	public Usuario() {
@@ -60,5 +72,13 @@ public class Usuario {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public List<Prestamo> getPrestamos() {
+		return prestamos;
+	}
+
+	public void setPrestamos(List<Prestamo> prestamos) {
+		this.prestamos = prestamos;
 	}
 }

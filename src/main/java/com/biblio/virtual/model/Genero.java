@@ -2,15 +2,11 @@ package com.biblio.virtual.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList; // Importante inicializar
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+// Importamos JsonIgnore (la solución al error 500)
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
@@ -26,9 +22,12 @@ public class Genero implements Serializable {
 	@NotEmpty(message = "El nombre del género no debe estar vacío")
 	private String nombre;
 
+	// CAMBIO CRÍTICO:
+	// Usamos @JsonIgnore en lugar de @JsonIgnoreProperties.
+	// Esto evita que intente cargar la lista Lazy y rompa la app.
 	@OneToMany(mappedBy = "genero")
-	@JsonIgnoreProperties("genero")
-	private List<Libro> libros = new java.util.ArrayList<>();
+	@JsonIgnore
+	private List<Libro> libros = new ArrayList<>();
 
 	// Getters y Setters
 	public Long getId() {
@@ -54,5 +53,4 @@ public class Genero implements Serializable {
 	public void setLibros(List<Libro> libros) {
 		this.libros = libros;
 	}
-
 }
