@@ -41,11 +41,16 @@ public class SecurityConfig {
 						// Permite las peticiones OPTIONS
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-						// Endpoints públicos
-						.requestMatchers("/auth/**").permitAll()
+						// Rutas públicas: Login y Register
+						.requestMatchers("/auth/login", "/auth/register").permitAll()
+
+						// Ruta /auth/me requiere autenticación
+						.requestMatchers("/auth/me").authenticated()
+
 						// Swagger
 						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-						// El resto autenticación
+
+						// El resto de las rutas requieren autenticación
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // Filtro JWT

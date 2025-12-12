@@ -1,13 +1,21 @@
 package com.biblio.virtual.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication; // IMPORTANTE
+import org.springframework.security.core.context.SecurityContextHolder; // IMPORTANTE
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping; // IMPORTANTE
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.biblio.virtual.dto.AuthRequest;
 import com.biblio.virtual.dto.AuthResponse;
@@ -42,9 +50,10 @@ public class AuthController {
 		Usuario usuario = usuarioRepository.findByUsername(authRequest.getUsername())
 				.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+		// Generamos el token (asegurando que el rol vaya limpio)
 		String token = jwtUtil.generateToken(usuario.getUsername(), usuario.getRole());
 
-		return ResponseEntity.ok(new AuthResponse(token, usuario.getUsername(), usuario.getRole()))	;
+		return ResponseEntity.ok(new AuthResponse(token, usuario.getUsername(), usuario.getRole()));
 	}
 
 	@PostMapping("/register")
@@ -56,10 +65,23 @@ public class AuthController {
 		Usuario usuario = new Usuario();
 		usuario.setUsername(authRequest.getUsername());
 		usuario.setPassword(passwordEncoder.encode(authRequest.getPassword()));
-		usuario.setRole("ROLE_USER"); // rol por defecto
+		usuario.setRole("ROLE_USER");
 
 		usuarioRepository.save(usuario);
 
 		return ResponseEntity.ok("Usuario registrado exitosamente");
+	}
+
+	// 👇 EL MÉTODO DIAGNÓSTICO (ESTO ES ORO PURO PARA DEBUGGEAR) 👇
+	@GetMapping("/me")
+	public ResponseEntity<Map<String, Object>> verifyUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (auth == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "No hay autenticación"));
+		}
+
+		return ResponseEntity.ok(Map.of("username", auth.getName(), "authorities", auth.getAuthorities(),
+				"isAuthenticated", auth.isAuthenticated()));
 	}
 }
