@@ -40,7 +40,7 @@ public class LibrosController {
 
 	// ADMIN y USER pueden listar libros
 	// READ - Listar todos los libros
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+	//@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping
 	public ResponseEntity<List<Libro>> listar() {
 		return ResponseEntity.ok(libroService.findAll());
