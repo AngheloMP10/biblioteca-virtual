@@ -2,8 +2,10 @@ package com.biblio.virtual.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList; // No olvides importar ArrayList
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonIgnoreProperties; <--- BORRA ESTE IMPORT
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -11,21 +13,22 @@ import jakarta.validation.constraints.NotEmpty;
 @Table(name = "autores")
 public class Autor implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotEmpty(message = "El nombre del autor no debe estar vacío")
-	private String nombre;
+    @NotEmpty(message = "El nombre del autor no debe estar vacío")
+    private String nombre;
 
-	@Column(name = "url_foto")
-	private String urlFoto; // Foto opcional del autor
+    @Column(name = "url_foto")
+    private String urlFoto;
 
-	@ManyToMany(mappedBy = "autores", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JsonIgnoreProperties("autores")
-	private List<Libro> libros = new java.util.ArrayList<>();
+    @ManyToMany(mappedBy = "autores", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // @JsonIgnoreProperties("autores") <--- BORRA ESTA LÍNEA (Redundante)
+    @JsonIgnore // <--- ESTA ES LA QUE VALE. MANTENLA.
+    private List<Libro> libros = new ArrayList<>();
 
 	// Getters y Setters
 	public Long getId() {
